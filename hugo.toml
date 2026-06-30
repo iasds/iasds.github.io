@@ -1,0 +1,43 @@
+baseURL = "https://iasds.github.io"
+languageCode = "en"
+title = "iasds"
+theme = "iasds"
+relativeURLs = false
+
+[params]
+  author = "iasds"
+  tagline = "Independent Researcher"
+  research = "Internet freedom · Censorship resistance · Privacy-enhancing technologies"
+  description = "iasds — Independent researcher: I2P network measurement, Qubes OS, privacy tools"
+  github = "iasds"
+  community = '<a href="https://t.me/qubeszh">Qubes OS Chinese Community</a>'
+  bio = 'Hang Chen — privacy & anonymity researcher from Malaysia. I2P network measurement, censorship circumvention.'
+  sponsor = 'Research funding welcome — <a href="mailto:fishtheclock@gmail.com">contact via email</a>, preferably PGP encrypted.'
+
+[menu]
+  [[menu.contact]]
+    name = "Email"
+    URL = "mailto:fishtheclock@gmail.com"
+    weight = 1
+  [[menu.contact]]
+    name = "Telegram"
+    URL = "https://t.me/calalaq"
+    weight = 2
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+    [markup.goldmark.extensions]
+      [markup.goldmark.extensions.passthrough]
+        enable = true
+        [markup.goldmark.extensions.passthrough.delimiters]
+          block = [["\\[", "\\]"], ["$$", "$$"]]
+          inline = [["\\(", "\\)"], ["$", "$"]]
+  [markup.highlight]
+    noClasses = false
+    guessSyntax = true

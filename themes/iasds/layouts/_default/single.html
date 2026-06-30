@@ -1,0 +1,20 @@
+{{ define "main" }}
+<article class="single-page">
+  <nav class="breadcrumb">
+    <a href="{{ .Site.Home.RelPermalink }}">Home</a>
+    {{ with .Section }}<span class="sep">/</span><a href="{{ $.Site.Home.RelPermalink }}{{ . | urlize }}">{{ . | humanize }}</a>{{ end }}
+  </nav>
+  <h1>{{ .Title }}</h1>
+  <div class="meta-line">
+    {{ with .Params.source_name }}<span class="source">{{ . }}</span>{{ end }}
+    {{ with .Params.date }}<span class="date">{{ .Format "2006-01-02" }}</span>{{ end }}
+    {{ with .Params.source_url }}<span class="source-link">[<a href="{{ . }}" target="_blank" rel="noopener">Source</a>]</span>{{ end }}
+  </div>
+  <div class="content">{{ .Content }}</div>
+
+  <nav class="page-nav">
+    <span class="prev">{{ with .PrevInSection }}<a href="{{ .RelPermalink }}">← {{ .Title }}</a>{{ end }}</span>
+    <span class="next">{{ with .NextInSection }}<a href="{{ .RelPermalink }}">{{ .Title }} →</a>{{ end }}</span>
+  </nav>
+</article>
+{{ end }}

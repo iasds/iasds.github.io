@@ -1,0 +1,52 @@
+{{ define "main" }}
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <h1>{{ .Site.Title }}</h1>
+      <div class="sub">{{ .Site.Params.tagline }}</div>
+      {{ with .Site.Params.bio }}<div class="bio">{{ . | safeHTML }}</div>{{ end }}
+      {{ with .Site.Params.community }}<div class="bio">{{ . | safeHTML }}</div>{{ end }}
+
+      <hr class="divider">
+
+      <div class="sponsor">
+        {{ with .Site.Params.sponsor }}{{ . | safeHTML }}{{ end }}
+      </div>
+
+      <hr class="divider">
+
+      <ul class="contact-list">
+        {{ range .Site.Menus.contact }}
+        <li><a href="{{ .URL }}">{{ .Name }}</a></li>
+        {{ end }}
+        <li><a href="/pgp-key.asc">PGP Key</a></li>
+        <li><a href="https://github.com/{{ .Site.Params.github }}">GitHub</a></li>
+      </ul>
+
+      <div class="pgp-line"><span class="pgp-label">PGP Fingerprint</span><br>1A60 9235 A475 39DF 6C4C<br>822A 6DA9 E3BD 0612</div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="card-grid">
+      {{ range where .Site.Sections "Section" "in" (slice "i2p" "qubes" "other") }}
+        <article class="card">
+          <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+          {{ $pages := .RegularPages }}
+          {{ with .Content }}<p class="desc">{{ . | plainify | truncate 120 }}</p>{{ end }}
+          {{ if gt (len $pages) 0 }}
+            <p class="muted">{{ len $pages }} post{{ if gt (len $pages) 1 }}s{{ end }}</p>
+            <ul>
+            {{ range $pages }}
+              {{ $link := .RelPermalink }}
+              {{ with .Params.external }}{{ $link = . }}{{ end }}
+              <li><a href="{{ $link }}">{{ .Title }}</a></li>
+            {{ end }}
+            </ul>
+          {{ end }}
+        </article>
+      {{ end }}
+    </div>
+  </main>
+</div>
+{{ end }}
