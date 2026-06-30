@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Lang }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
+<meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+<meta name="author" content="{{ .Site.Params.author }}">
+{{ with .Params.tags }}<meta name="keywords" content="{{ delimit . ", " }}">{{ end }}
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href="{{ .Permalink }}">
+<link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" href="{{ "index.xml" | relURL }}">
+<link rel="preload" href="/fonts/SeasonCollectionVF.woff2" as="font" type="font/woff2" crossorigin>
+<meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
+<meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
+<meta property="og:site_name" content="{{ .Site.Title }}">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+</head>
+<body>
+<button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">☀️</button>
+
+{{ block "main" . }}{{ end }}
+
+<footer class="footer">
+  <span>&copy; {{ now.Format "2006" }} {{ .Site.Params.author }}</span>
+  <span class="sep">·</span>
+  <span>Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener">CC BY-NC-SA 4.0</a></span>
+  <span class="sep">·</span>
+  <span>Powered by Hugo · GitHub Pages</span>
+</footer>
+
+<script>
+(function() {
+  var btn = document.getElementById('theme-toggle');
+  var body = document.body;
+  var KEY = 'theme';
+
+  function setTheme(dark) {
+    if (dark) {
+      body.classList.add('dark');
+      btn.textContent = '🌙';
+    } else {
+      body.classList.remove('dark');
+      btn.textContent = '☀️';
+    }
+  }
+
+  // On load: check localStorage first, then system preference
+  var stored = localStorage.getItem(KEY);
+  if (stored === 'dark') {
+    setTheme(true);
+  } else if (stored === 'light') {
+    setTheme(false);
+  } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    setTheme(true);
+  } else {
+    setTheme(false); // default light
+  }
+
+  btn.addEventListener('click', function() {
+    var isDark = body.classList.contains('dark');
+    var next = !isDark;
+    setTheme(next);
+    localStorage.setItem(KEY, next ? 'dark' : 'light');
+  });
+})();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  renderMathInElement(document.body, {
+    delimiters: [
+      {left: '\\[', right: '\\]', display: true},
+      {left: '$$', right: '$$', display: true},
+      {left: '\\(', right: '\\)', display: false},
+      {left: '$', right: '$', display: false}
+    ],
+    throwOnError: false,
+    strict: false
+  });
+});
+</script>
+</body>
+</html>

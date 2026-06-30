@@ -1,0 +1,12 @@
+name = "iasds"
+license = "MIT"
+licenselink = ""
+description = "Minimal dense theme for iasds.github.io"
+homepage = ""
+tags = []
+features = []
+min_version = "0.120.0"
+
+[author]
+  name = "Zhenyu Zhong"
+  homepage = ""
