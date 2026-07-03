@@ -16,7 +16,15 @@
 <meta property="og:url" content="{{ .Permalink }}">
 <meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
 <meta property="og:site_name" content="{{ .Site.Title }}">
+{{ if .IsHome }}
+<meta property="og:image" content="{{ "img/og/home.png" | absURL }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{{ "img/og/home.png" | absURL }}">
+{{ else }}
 <meta name="twitter:card" content="summary">
+{{ end }}
 <link rel="stylesheet" href="/css/style.css">
 <link rel="stylesheet" href="/css/syntax.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
