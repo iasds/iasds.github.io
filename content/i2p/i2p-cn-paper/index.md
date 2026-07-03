@@ -36,7 +36,7 @@ The reachability asymmetry we observe (China-vantage-only nodes) is a measured f
 
 ## Preprint & Code
 
-- **Preprint (Zenodo, open access)**: [10.5281/zenodo.21173802](https://doi.org/10.5281/zenodo.21173802)
+- **Preprint (Zenodo, open access)**: [10.5281/zenodo.21169969](https://doi.org/10.5281/zenodo.21169969)
 - **Scanner source code (MIT)**: [github.com/iasds/i2p-network-scanner](https://github.com/iasds/i2p-network-scanner)
 
 ---
