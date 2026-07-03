@@ -19,10 +19,6 @@ relativeURLs = false
     name = "Email"
     URL = "mailto:fishtheclock@gmail.com"
     weight = 1
-  [[menu.contact]]
-    name = "Telegram"
-    URL = "https://t.me/calalaq"
-    weight = 2
 
 [taxonomies]
   tag = "tags"
