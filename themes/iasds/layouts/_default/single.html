@@ -2,19 +2,23 @@
 <article class="single-page">
   <nav class="breadcrumb">
     <a href="{{ .Site.Home.RelPermalink }}">Home</a>
-    {{ with .Section }}<span class="sep">/</span><a href="{{ $.Site.Home.RelPermalink }}{{ . | urlize }}">{{ . | humanize }}</a>{{ end }}
+    {{ with .CurrentSection }}{{ if ne .Kind "home" }}<span class="sep">/</span><a href="{{ .RelPermalink }}">{{ .Title }}</a>{{ end }}{{ end }}
   </nav>
   <h1>{{ .Title }}</h1>
+  {{ if or .Params.source_name .Date .Params.source_url }}
   <div class="meta-line">
     {{ with .Params.source_name }}<span class="source">{{ . }}</span>{{ end }}
-    {{ with .Params.date }}<span class="date">{{ .Format "2006-01-02" }}</span>{{ end }}
+    {{ with .Date }}<span class="date">{{ .Format "2006-01-02" }}</span>{{ end }}
     {{ with .Params.source_url }}<span class="source-link">[<a href="{{ . }}" target="_blank" rel="noopener">Source</a>]</span>{{ end }}
   </div>
+  {{ end }}
   <div class="content">{{ .Content }}</div>
 
+  {{ if or .PrevInSection .NextInSection }}
   <nav class="page-nav">
     <span class="prev">{{ with .PrevInSection }}<a href="{{ .RelPermalink }}">← {{ .Title }}</a>{{ end }}</span>
     <span class="next">{{ with .NextInSection }}<a href="{{ .RelPermalink }}">{{ .Title }} →</a>{{ end }}</span>
   </nav>
+  {{ end }}
 </article>
 {{ end }}
