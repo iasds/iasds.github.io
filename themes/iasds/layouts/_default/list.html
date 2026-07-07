@@ -1,11 +1,15 @@
 {{ define "main" }}
 <div class="section-page">
+  <nav class="breadcrumb">
+    <a href="{{ .Site.Home.RelPermalink }}">Home</a>
+  </nav>
   <h1>{{ .Title }}</h1>
-  <div class="content">{{ .Content }}</div>
+  {{ with .Content }}<div class="content">{{ . }}</div>{{ end }}
   <ul class="post-list">
     {{ range .Pages }}
     <li>
       <div class="title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></div>
+      {{ with .Date }}<div class="post-meta">{{ .Format "2006-01-02" }}</div>{{ end }}
       {{ with .Summary }}<div class="summary">{{ plainify . | truncate 120 }}</div>{{ end }}
     </li>
     {{ end }}

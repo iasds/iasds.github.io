@@ -1,0 +1,9 @@
+{{ define "main" }}
+<article class="single-page store-page">
+  <nav class="breadcrumb">
+    <a href="{{ .Site.Home.RelPermalink }}">Home</a>
+  </nav>
+  <h1>{{ .Title }}</h1>
+  <div class="content">{{ .Content }}</div>
+</article>
+{{ end }}

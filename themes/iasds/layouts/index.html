@@ -16,11 +16,12 @@
       <hr class="divider">
 
       <ul class="contact-list">
+        <li><a href="{{ "/store/" | relURL }}">Consulting</a></li>
         {{ range .Site.Menus.contact }}
         <li><a href="{{ .URL }}">{{ .Name }}</a></li>
         {{ end }}
-        <li><a href="/pgp-key.asc">PGP Key</a></li>
-        <li><a href="https://github.com/{{ .Site.Params.github }}">GitHub</a></li>
+        <li><a href="{{ "/pgp-key.asc" | relURL }}">PGP Key</a></li>
+        <li><a href="https://github.com/{{ .Site.Params.github }}" target="_blank" rel="noopener">GitHub</a></li>
       </ul>
 
       <div class="pgp-line"><span class="pgp-label">PGP Fingerprint</span><br>1A60 9235 A475 39DF 6C4C<br>822A 6DA9 E3BD 0612</div>
