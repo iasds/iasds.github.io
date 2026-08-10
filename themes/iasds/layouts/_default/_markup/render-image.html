@@ -1,0 +1,22 @@
+{{ $res := .Page.Resources.GetMatch (path.Base .Destination) }}
+{{ if $res }}
+  {{ $smallW := $res.Resize "800x webp" }}
+  {{ $largeW := $res.Resize "1600x webp" }}
+  {{ $smallA := $res.Resize "800x avif" }}
+  {{ $largeA := $res.Resize "1600x avif" }}
+  {{ $sizes := "(max-width: 48rem) 100vw, 40rem" }}
+<picture>
+  <source type="image/avif" srcset="{{ $smallA.RelPermalink }} {{ $smallA.Width }}w, {{ $largeA.RelPermalink }} {{ $largeA.Width }}w" sizes="{{ $sizes }}">
+  <source type="image/webp" srcset="{{ $smallW.RelPermalink }} {{ $smallW.Width }}w, {{ $largeW.RelPermalink }} {{ $largeW.Width }}w" sizes="{{ $sizes }}">
+  <img src="{{ $largeW.RelPermalink }}" width="{{ $largeW.Width }}" height="{{ $largeW.Height }}" alt="{{ .Text }}" loading="lazy">
+</picture>
+{{ else }}
+  {{ $path := printf "static%s" .Destination }}
+  {{ if fileExists $path }}
+    {{ with imageConfig $path }}
+<img src="{{ $.Destination | safeURL }}" alt="{{ $.Text }}" width="{{ .Width }}" height="{{ .Height }}" loading="lazy">
+    {{ end }}
+  {{ else }}
+<img src="{{ .Destination | safeURL }}" alt="{{ .Text }}" loading="lazy">
+  {{ end }}
+{{ end }}

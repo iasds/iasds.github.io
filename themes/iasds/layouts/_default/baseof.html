@@ -3,19 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+{{ $pageDesc := .Description }}
+{{ if not $pageDesc }}{{ $pageDesc = .Summary | plainify | truncate 155 }}{{ end }}
+{{ if not $pageDesc }}{{ $pageDesc = .Site.Params.description }}{{ end }}
+{{ $ogImg := "img/og/home.png" | absURL }}
+{{ if and (not .IsHome) (eq .Kind "page") }}
+  {{ with .Params.og_image }}
+    {{ $ogImg = . | absURL }}
+  {{ else }}
+    {{ $firstImg := index (findRE `<img[^>]+src="([^"]+)"` .Content) 0 }}
+    {{ with $firstImg }}
+      {{ $src := replaceRE `.*src="([^"]+)".*` "$1" . }}
+      {{ if strings.HasPrefix $src "http" }}{{ $ogImg = $src }}{{ else }}{{ $ogImg = $src | absURL }}{{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
 <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
-<meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+<meta name="description" content="{{ $pageDesc }}">
 <meta name="author" content="{{ .Site.Params.author }}">
-{{ with .Params.tags }}<meta name="keywords" content="{{ delimit . ", " }}">{{ end }}
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="canonical" href="{{ .Permalink }}">
-<link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" href="{{ "index.xml" | relURL }}">
-<link rel="preload" href="/fonts/SeasonCollectionVF.woff2" as="font" type="font/woff2" crossorigin>
-<meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
-<meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
-<meta property="og:url" content="{{ .Permalink }}">
-<meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
-<meta property="og:site_name" content="{{ .Site.Title }}">
+{{ with .OutputFormats.Get "rss" }}<link rel="alternate" type="application/rss+xml" title="{{ $.Site.Title }}" href="{{ .RelPermalink }}">{{ end }}
 {{ if .IsHome }}
 <meta property="og:image" content="{{ "img/og/home.png" | absURL }}">
 <meta property="og:image:width" content="1200">
@@ -24,13 +32,75 @@
 <meta name="twitter:image" content="{{ "img/og/home.png" | absURL }}">
 {{ else }}
 <meta name="twitter:card" content="summary">
+<meta property="og:image" content="{{ $ogImg }}">
+<meta name="twitter:image" content="{{ $ogImg }}">
 {{ end }}
-<link rel="stylesheet" href="/css/style.css">
-<link rel="stylesheet" href="/css/syntax.css">
+<meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
+<meta property="og:description" content="{{ $pageDesc }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
+<meta property="og:site_name" content="{{ .Site.Title }}">
+<meta name="theme-color" content="#f7f4ef">
+{{ $css := resources.Get "css/style.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}" crossorigin="anonymous">
+<link rel="preload" href="/fonts/SeasonCollectionVF-subset.woff2" as="font" type="font/woff2" crossorigin>
+<script>
+(function() {
+  try {
+    var stored = localStorage.getItem('theme');
+    var dark = stored === 'dark' || (stored !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (dark) {
+      document.documentElement.classList.add('dark');
+      var m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.setAttribute('content', '#101314');
+    }
+  } catch (e) {}
+})();
+</script>
+{{ $hasMath := or (strings.Contains .Content "\\(") (strings.Contains .Content "\\[") (strings.Contains .Content "$$") }}
+{{ if $hasMath }}
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+{{ end }}
+{{ if .IsHome }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": {{ .Site.Title | jsonify | safeJS }},
+  "url": {{ .Permalink | jsonify | safeJS }},
+  "description": {{ .Site.Params.description | jsonify | safeJS }}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": {{ .Site.Params.author | jsonify | safeJS }},
+  "url": {{ .Permalink | jsonify | safeJS }},
+  "description": {{ .Site.Params.research | jsonify | safeJS }},
+  "sameAs": ["https://github.com/{{ .Site.Params.github }}"]
+}
+</script>
+{{ else if and (eq .Kind "page") }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": {{ .Title | jsonify | safeJS }},
+  "description": {{ $pageDesc | jsonify | safeJS }},
+  "image": {{ $ogImg | jsonify | safeJS }},
+  {{ with .Date }}"datePublished": {{ .Format "2006-01-02" | jsonify | safeJS }},{{ end }}
+  "author": { "@type": "Person", "name": {{ .Site.Params.author | jsonify | safeJS }} },
+  "publisher": { "@type": "Organization", "name": {{ .Site.Title | jsonify | safeJS }} },
+  "mainEntityOfPage": {{ .Permalink | jsonify | safeJS }}
+}
+</script>
+{{ end }}
 </head>
 <body>
-<button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">☀️</button>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode"></button>
 
 {{ block "main" . }}{{ end }}
 
@@ -39,46 +109,12 @@
   <span class="sep">·</span>
   <span>Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener">CC BY-NC-SA 4.0</a></span>
   <span class="sep">·</span>
+  {{ with .OutputFormats.Get "rss" }}<span><a href="{{ .RelPermalink }}">RSS</a></span>
+  <span class="sep">·</span>{{ end }}
   <span>Powered by Hugo · GitHub Pages</span>
 </footer>
 
-<script>
-(function() {
-  var btn = document.getElementById('theme-toggle');
-  var body = document.body;
-  var KEY = 'theme';
-
-  function setTheme(dark) {
-    if (dark) {
-      body.classList.add('dark');
-      btn.textContent = '🌙';
-    } else {
-      body.classList.remove('dark');
-      btn.textContent = '☀️';
-    }
-  }
-
-  // On load: check localStorage first, then system preference
-  var stored = localStorage.getItem(KEY);
-  if (stored === 'dark') {
-    setTheme(true);
-  } else if (stored === 'light') {
-    setTheme(false);
-  } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    setTheme(true);
-  } else {
-    setTheme(false); // default light
-  }
-
-  btn.addEventListener('click', function() {
-    var isDark = body.classList.contains('dark');
-    var next = !isDark;
-    setTheme(next);
-    localStorage.setItem(KEY, next ? 'dark' : 'light');
-  });
-})();
-</script>
-
+{{ if $hasMath }}
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"></script>
 <script>
@@ -94,6 +130,189 @@ document.addEventListener("DOMContentLoaded", function() {
     strict: false
   });
 });
+</script>
+{{ end }}
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var KEY = 'theme';
+
+  var toggleBtn = document.getElementById('theme-toggle');
+  var icons = {
+    moon: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+    sun: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>'
+  };
+  function isDark() { return root.classList.contains('dark'); }
+  function sync() {
+    var dark = isDark();
+    toggleBtn.innerHTML = dark ? icons.sun : icons.moon;
+    toggleBtn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+    toggleBtn.title = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', dark ? '#101314' : '#f7f4ef');
+  }
+  toggleBtn.addEventListener('click', function() {
+    root.classList.add('theme-transition');
+    setTimeout(function() { root.classList.remove('theme-transition'); }, 300);
+    var next = !isDark();
+    root.classList.toggle('dark', next);
+    localStorage.setItem(KEY, next ? 'dark' : 'light');
+    sync();
+  });
+  sync();
+
+  function onDOMReady(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn);
+    } else {
+      fn();
+    }
+  }
+
+  onDOMReady(function() {
+    document.querySelectorAll('.content pre').forEach(function(pre) {
+      var btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.type = 'button';
+      btn.setAttribute('aria-label', 'Copy code to clipboard');
+      btn.textContent = 'Copy';
+      btn.addEventListener('click', function() {
+        var code = pre.querySelector('code');
+        var text = code ? code.innerText : pre.innerText;
+        var done = function() {
+          btn.textContent = 'Copied';
+          btn.classList.add('copied');
+          setTimeout(function() {
+            btn.textContent = 'Copy';
+            btn.classList.remove('copied');
+          }, 1800);
+        };
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(text).then(done, function() { fallbackCopy(text); done(); });
+        } else {
+          fallbackCopy(text);
+          done();
+        }
+      });
+      pre.appendChild(btn);
+      var codeEl = pre.querySelector('code[data-lang]');
+      if (codeEl) {
+        var lang = codeEl.getAttribute('data-lang');
+        if (lang && lang !== 'fallback') {
+          var tag = document.createElement('span');
+          tag.className = 'code-lang';
+          tag.textContent = lang;
+          pre.appendChild(tag);
+        }
+      }
+    });
+    function fallbackCopy(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'absolute';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+  });
+
+  onDOMReady(function() {
+    document.querySelectorAll('.content h2, .content h3, .content h4').forEach(function(h) {
+      if (!h.id) return;
+      var a = document.createElement('a');
+      a.className = 'anchor';
+      a.href = '#' + h.id;
+      a.setAttribute('aria-label', 'Link to this section');
+      a.title = 'Link to this section';
+      a.textContent = '#';
+      h.appendChild(a);
+    });
+  });
+
+  onDOMReady(function() {
+    document.querySelectorAll('.content a').forEach(function(a) {
+      var href = a.getAttribute('href') || '';
+      if (/^https?:\/\//i.test(href)) {
+        try {
+          if (new URL(href).hostname !== location.hostname) a.classList.add('external');
+        } catch (e) {}
+      }
+    });
+  });
+
+  var opener = null;
+  var onKey = null;
+  function closeLightbox() {
+    var o = document.querySelector('.lightbox');
+    if (o) { o.remove(); document.body.style.overflow = ''; }
+    if (onKey) { document.removeEventListener('keydown', onKey); onKey = null; }
+    if (opener) { opener.focus(); opener = null; }
+  }
+  onDOMReady(function() {
+    document.querySelectorAll('.content img').forEach(function(img) {
+      img.addEventListener('click', function() {
+        closeLightbox();
+        opener = img;
+        var overlay = document.createElement('div');
+        overlay.className = 'lightbox';
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-modal', 'true');
+        overlay.setAttribute('aria-label', 'Image preview');
+        var big = document.createElement('img');
+        big.src = img.currentSrc || img.src;
+        big.alt = img.alt || '';
+        var closeBtn = document.createElement('button');
+        closeBtn.className = 'lightbox-close';
+        closeBtn.type = 'button';
+        closeBtn.setAttribute('aria-label', 'Close image');
+        closeBtn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+        overlay.appendChild(big);
+        overlay.appendChild(closeBtn);
+        overlay.addEventListener('click', function(e) {
+          if (e.target === overlay || e.target === closeBtn) closeLightbox();
+        });
+        onKey = function(e) {
+          if (e.key === 'Escape') { closeLightbox(); }
+          else if (e.key === 'Tab') { e.preventDefault(); closeBtn.focus(); }
+        };
+        document.addEventListener('keydown', onKey);
+        document.body.appendChild(overlay);
+        document.body.style.overflow = 'hidden';
+        closeBtn.focus();
+      });
+    });
+  });
+
+  var topBtn = document.createElement('button');
+  topBtn.className = 'top-btn';
+  topBtn.type = 'button';
+  topBtn.setAttribute('aria-label', 'Back to top');
+  topBtn.title = 'Back to top';
+  topBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5m-7 7 7-7 7 7"/></svg>';
+  document.body.appendChild(topBtn);
+  function onScroll() {
+    topBtn.classList.toggle('visible', window.scrollY > window.innerHeight);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  topBtn.addEventListener('click', function() {
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+  });
+
+  if ('serviceWorker' in navigator &&
+      location.protocol === 'https:' &&
+      location.hostname !== 'localhost' &&
+      location.hostname !== '127.0.0.1') {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+})();
 </script>
 </body>
 </html>

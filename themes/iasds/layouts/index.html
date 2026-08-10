@@ -24,24 +24,28 @@
         <li><a href="https://github.com/{{ .Site.Params.github }}" target="_blank" rel="noopener">GitHub</a></li>
       </ul>
 
-      <div class="pgp-line"><span class="pgp-label">PGP Fingerprint</span><br>1A60 9235 A475 39DF 6C4C<br>822A 6DA9 E3BD 0612</div>
+      <div class="pgp-line"><span class="pgp-label">PGP Fingerprint</span><br>{{ .Site.Params.pgp_fingerprint_1 }}<br>{{ .Site.Params.pgp_fingerprint_2 }}</div>
     </div>
   </aside>
 
-  <main class="main-content">
+  <main id="main-content" class="main-content">
     <div class="card-grid">
       {{ range where .Site.Sections "Section" "in" (slice "i2p" "qubes" "other") }}
         <article class="card">
-          <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
           {{ $pages := .RegularPages }}
+          <div class="card-head">
+            <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+          </div>
           {{ with .Content }}<p class="desc">{{ . | plainify | truncate 120 }}</p>{{ end }}
           {{ if gt (len $pages) 0 }}
-            <p class="muted">{{ len $pages }} post{{ if gt (len $pages) 1 }}s{{ end }}</p>
             <ul>
             {{ range $pages }}
               {{ $link := .RelPermalink }}
               {{ with .Params.external }}{{ $link = . }}{{ end }}
-              <li><a href="{{ $link }}">{{ .Title }}</a></li>
+              <li><a href="{{ $link }}">
+                <span class="post-title">{{ .Title }}</span>
+                {{ with .Date }}<span class="post-date">{{ .Format "2006-01-02" }}</span>{{ end }}
+              </a></li>
             {{ end }}
             </ul>
           {{ end }}
