@@ -1,5 +1,6 @@
 {{ define "main" }}
-<article class="single-page">
+<div class="single-layout">
+<main id="main-content" class="single-page">
   <nav class="breadcrumb">
     <a href="{{ .Site.Home.RelPermalink }}">Home</a>
     {{ with .CurrentSection }}{{ if ne .Kind "home" }}<span class="sep">/</span><a href="{{ .RelPermalink }}">{{ .Title }}</a>{{ end }}{{ end }}
@@ -10,8 +11,19 @@
     {{ with .Params.source_name }}<span class="source">{{ . }}</span>{{ end }}
     {{ with .Date }}<span class="date">{{ .Format "2006-01-02" }}</span>{{ end }}
     {{ with .Params.source_url }}<span class="source-link">[<a href="{{ . }}" target="_blank" rel="noopener">Source</a>]</span>{{ end }}
+    {{ if gt .WordCount 300 }}<span class="read-time">{{ math.Ceil (div .WordCount 200.0) }} min read</span>{{ end }}
   </div>
   {{ end }}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": {{ .Site.Home.Title | jsonify | safeJS }}, "item": {{ .Site.Home.Permalink | jsonify | safeJS }} }{{ $sec := .CurrentSection }}{{ if and $sec (ne $sec.Kind "home") }},
+      { "@type": "ListItem", "position": 2, "name": {{ $sec.Title | jsonify | safeJS }}, "item": {{ $sec.Permalink | jsonify | safeJS }} }{{ end }}
+    ]
+  }
+  </script>
   <div class="content">{{ .Content }}</div>
 
   {{ if or .PrevInSection .NextInSection }}
@@ -20,5 +32,12 @@
     <span class="next">{{ with .NextInSection }}<a href="{{ .RelPermalink }}">{{ .Title }} →</a>{{ end }}</span>
   </nav>
   {{ end }}
-</article>
+</main>
+{{ if gt (len .TableOfContents) 50 }}
+<aside class="toc-aside" aria-label="Table of contents">
+  <div class="toc-title">Contents</div>
+  {{ .TableOfContents }}
+</aside>
+{{ end }}
+</div>
 {{ end }}
