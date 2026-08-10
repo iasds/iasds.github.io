@@ -21,8 +21,15 @@ jobs:
       - uses: actions/checkout@v4
       - uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: '0.145.0'
+          hugo-version: '0.164.0'
       - run: hugo --minify
+      - name: Check image formats in content
+        run: |
+          if find content -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" \) | grep -q .; then
+            echo "::error::Non-webp images found in content/ (use .webp or .avif):"
+            find content -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" \)
+            exit 1
+          fi
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
