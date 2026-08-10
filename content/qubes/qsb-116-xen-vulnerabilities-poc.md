@@ -2,7 +2,6 @@
 title: "QSB-116: Xen Vulnerabilities (XSA-500/505/506/507) — Research PoCs"
 description: "Research PoCs and a batch runner for the Xen vulnerabilities covered by QSB-116."
 date: 2026-07-29
-tags: [qubes, xen, security, exploit, poc, xsa]
 ---
 
 On 2026-07-28, the Qubes Security Team published [QSB-116](https://github.com/QubesOS/qubes-secpack/blob/f9001423ffb11de26bdcf0b4478838739cc3f6b3/QSBs/qsb-116-2026.txt), covering four Xen vulnerabilities disclosed the same day:

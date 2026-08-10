@@ -16,7 +16,7 @@ This method is an improved implementation compared to the [I2pd netvm guide](htt
 
 2. Clone this template and name it **debian-12-xfce-i2pd**.
 
-![1](/img/i2pd-netvm/10c8ad9d9f203fc8733a614474539342703b4dcd.png)
+![1](10c8ad9d9f203fc8733a614474539342703b4dcd.webp)
 
 **Execute the following commands within the `debian-12-xfce-i2pd`:**
 
@@ -43,9 +43,9 @@ shutdown now
 
 ### Creating `sys-i2pd-out`
 
-![2](/img/i2pd-netvm/df3365ca918f1e7321f0ac1c1a87f2ea22581b87.png)
+![2](df3365ca918f1e7321f0ac1c1a87f2ea22581b87.webp)
 
-![3](/img/i2pd-netvm/196f2f689b68a3e3757c88d354762e2ff8c0a193.png)
+![3](196f2f689b68a3e3757c88d354762e2ff8c0a193.webp)
 
 **Execute the following commands within `sys-i2pd-out`:**
 
@@ -117,15 +117,15 @@ outproxyport = 4500
 
 ### Creating `sys-i2pd-in`
 
-![4](/img/i2pd-netvm/f3e1f1082000f3547c8dcc6e1c05c7945c1c438d.png)
+![4](f3e1f1082000f3547c8dcc6e1c05c7945c1c438d.webp)
 
-![5](/img/i2pd-netvm/91ef44390dc8f7a92f34d103f1c750f5f66d8927.png)
+![5](91ef44390dc8f7a92f34d103f1c750f5f66d8927.webp)
 
-![Screenshot](/img/i2pd-netvm/5be039a8e5999fa5ccb321cddbcd8dd17571dee5.png)
+![Screenshot](5be039a8e5999fa5ccb321cddbcd8dd17571dee5.webp)
 
-![Screenshot](/img/i2pd-netvm/5e114b04a40ef8a004f8720d69e65cba55c1ffcb.png)
+![Screenshot](5e114b04a40ef8a004f8720d69e65cba55c1ffcb.webp)
 
-![Screenshot](/img/i2pd-netvm/b196ed2d5ef8beb210cc3276dfc324c2699134e1.png)
+![Screenshot](b196ed2d5ef8beb210cc3276dfc324c2699134e1.webp)
 Open a terminal and type `clash-verge` to launch the application.
 
 1. Create a new profile in the **Clash Verge** application:
@@ -134,25 +134,25 @@ Open a terminal and type `clash-verge` to launch the application.
 
   - Select `Local` as the type and save.
 
-![Screenshot](/img/i2pd-netvm/ab375c876c26ba94812bfa4497a75dffc81f932c.png)
+![Screenshot](ab375c876c26ba94812bfa4497a75dffc81f932c.webp)
 
 2. Edit proxy settings:
 
   - Click `MRB > Edit Proxies`.
 
-![Screenshot](/img/i2pd-netvm/e785d29c67533da32aa3ab514357892de12171ab.png)
+![Screenshot](e785d29c67533da32aa3ab514357892de12171ab.webp)
 
   - Check the IP address of **sys-i2pd-out** in Qube Manager.
 
-![Screenshot](/img/i2pd-netvm/d6a39b2858336112c88f9f2a0688f742426670e8.png)
+![Screenshot](d6a39b2858336112c88f9f2a0688f742426670e8.webp)
 
   - Enter `socks5://<YOUR_IP>:4500` and save.
 
-![Screenshot](/img/i2pd-netvm/715e3932f21c986d549df354df3249749ffa9874.png)
+![Screenshot](715e3932f21c986d549df354df3249749ffa9874.webp)
 
   - Enable the proxy in `Proxies > Global`.
 
-![Screenshot](/img/i2pd-netvm/8b75146000a986557b38b07986ee24d12c892d66.png)
+![Screenshot](8b75146000a986557b38b07986ee24d12c892d66.webp)
 
   - Enable autostart in `Setting > System Setting > Auto Launch`.
 
@@ -170,9 +170,9 @@ qvm-firewall sys-i2pd-in del --rule-no 0
 
 ### **Verification**
 
-![Screenshot](/img/i2pd-netvm/feab116635dd3a0066010cbd05b6cacbeb35b025.png)
+![Screenshot](feab116635dd3a0066010cbd05b6cacbeb35b025.webp)
 
-![Screenshot](/img/i2pd-netvm/ccf7dc9daa355cea657b5e89d7fb3de5fc962380.png)
+![Screenshot](ccf7dc9daa355cea657b5e89d7fb3de5fc962380.webp)
 Create a new test VM and select sys-i2pd-in as its netvm to verify network functionality. You should be able to access both .i2p services and the clearnet.
 
 ### Donation
