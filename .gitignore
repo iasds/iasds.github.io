@@ -3,6 +3,9 @@
 /public/
 /resources/
 
+# Local agent instructions (never commit)
+/AGENTS.md
+
 # OS
 .DS_Store
 Thumbs.db
