@@ -42,7 +42,7 @@ Depending on the scope, the result may be:
 
 Email: [fishtheclock@gmail.com](mailto:fishtheclock@gmail.com)
 
-PGP: [1A60 9235 A475 39DF 6C4C 822A 6DA9 E3BD 0612](/pgp-key.asc)
+PGP: [1A60 9235 A475 39DF 6C4C C09B 822A 6DA9 E3BD 0612](/pgp-key.asc)
 
 Multiple payment methods accepted. Serious inquiries only.
 

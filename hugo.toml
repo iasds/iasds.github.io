@@ -14,7 +14,7 @@ disableKinds = ['taxonomy', 'term']
   community = '<a href="https://t.me/qubeszh">Qubes OS Chinese Community</a>'
   bio = 'Hang Chen — privacy & anonymity researcher from Malaysia. I2P network measurement, censorship circumvention.'
   sponsor = 'Research funding welcome — <a href="mailto:fishtheclock@gmail.com">contact via email</a>, preferably PGP encrypted.'
-  pgp_fingerprint_1 = "1A60 9235 A475 39DF 6C4C"
+  pgp_fingerprint_1 = "1A60 9235 A475 39DF 6C4C C09B"
   pgp_fingerprint_2 = "822A 6DA9 E3BD 0612"
 
 [menu]
